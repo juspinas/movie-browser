@@ -192,6 +192,7 @@ class Movie:
         self.__actors = []
         self.__genres = []
         self.__runtime_minutes = 0
+        self.__hyperlink = None
     
     @property
     def title(self) -> str:
@@ -258,6 +259,14 @@ class Movie:
             else:
                 raise ValueError
 
+    @property
+    def hyperlink(self) -> str:
+        return self._hyperlink
+    @genres.setter
+    def hyperlink(self, hyperlink):
+        if type(hyperlink) is str:
+            self.__hyperlink = hyperlink
+
     def __repr__(self):
         return f"<Movie {self.__title}, {self.__release_year}>"
 
@@ -268,9 +277,10 @@ class Movie:
             return False
 
     def __lt__(self, other):
-        if self.title == other.title:
-            return self.release_year < other.release_year
-        return self.title < other.title
+        # if self.title == other.title:
+        #     return self.release_year < other.release_year
+        # return self.title < other.title
+        return self.movie_id < other.movie_id
     
     def __hash__(self):
         combinedStr = self.__title + str(self.__release_year)

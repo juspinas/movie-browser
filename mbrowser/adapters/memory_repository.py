@@ -142,11 +142,11 @@ class MemoryRepository(AbstractRepository):
     #     return self._comments
 
     # Helper method to return article index.
-    # def movie_index(self, movie: Movie):
-    #     index = bisect_left(self._movies, movie)
-    #     if index != len(self._movies) and self._movies[index].release_year == movie.release_year:
-    #         return index
-    #     raise ValueError
+    def movie_index(self, movie: Movie):
+        index = bisect_left(self._movies, movie)
+        if index != len(self._movies) and self._movies[index].title == movie.title:
+            return index
+        raise ValueError
 
 
 def read_csv_file(filename: str):

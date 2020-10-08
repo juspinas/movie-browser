@@ -81,12 +81,12 @@ def test_repository_does_not_retrieve_an_article_when_there_are_no_movies_for_a_
 
 def test_repository_can_get_first_movie(in_memory_repo):
     movie = in_memory_repo.get_first_movie()
-    assert movie.title == '(500) Days of Summer'
+    assert movie.title == 'Guardians of the Galaxy'
 
 
 def test_repository_can_get_last_movie(in_memory_repo):
     movie = in_memory_repo.get_last_movie()
-    assert movie.title == 'Zootopia'
+    assert movie.title == 'Nine Lives'
 
 
 
@@ -124,7 +124,7 @@ def test_repository_returns_an_empty_list_for_non_existent_ids(in_memory_repo):
 #     assert len(article_ids) == 0
 
 
-# def test_repository_returns_date_of_previous_article(in_memory_repo):
+# def test_repository_returns_release_year_of_previous_movie(in_memory_repo):
 #     article = in_memory_repo.get_article(6)
 #     previous_date = in_memory_repo.get_date_of_previous_article(article)
 
