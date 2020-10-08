@@ -118,13 +118,13 @@ def test_cannot_get_movie_with_non_existent_id(in_memory_repo):
 def test_get_first_movie(in_memory_repo):
     movie_as_dict = movies_services.get_first_movie(in_memory_repo)
 
-    assert movie_as_dict['id'] == 508
+    assert movie_as_dict['id'] == 1
 
 
 def test_get_last_movie(in_memory_repo):
     movie_as_dict = movies_services.get_last_movie(in_memory_repo)
 
-    assert movie_as_dict['id'] == 75
+    assert movie_as_dict['id'] == 1000
 
 
 # def test_get_articles_by_date_with_one_date(in_memory_repo):
