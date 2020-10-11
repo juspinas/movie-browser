@@ -38,12 +38,12 @@ class AbstractRepository(abc.ABC):
         """
         raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def get_movies_by_date(self, target_date: date) -> List[Article]:
-    #     """ Returns a list of Articles that were published on target_date.
-    #     If there are no Articles on the given date, this method returns an empty list.
-    #     """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def get_movies_by_release_year(self, target_year: int) -> List[Movie]:
+        """ Returns a list of Movies that were released on target_year.
+        If there are no Movies released on the given year, this method returns an empty list.
+        """
+        raise NotImplementedError
 
     @abc.abstractmethod
     def get_number_of_movies(self):
@@ -71,12 +71,12 @@ class AbstractRepository(abc.ABC):
         """
         raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def get_article_ids_for_tag(self, tag_name: str):
-    #     """ Returns a list of ids representing Articles that are tagged by tag_name.
-    #     If there are Articles that are tagged by tag_name, this method returns an empty list.
-    #     """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def get_movie_ids_for_genre(self, genre_name: str):
+        """ Returns a list of ids representing Movies that are tagged by genre_name.
+        If there are no movies that are tagged by genre_name, this method returns an empty list.
+        """
+        raise NotImplementedError
 
     # @abc.abstractmethod
     # def get_release_year_of_previous_movie(self, movie: Movie):
@@ -94,15 +94,15 @@ class AbstractRepository(abc.ABC):
     #     """
     #     raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def add_tag(self, tag: Tag):
-    #     """ Adds a Tag to the repository. """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def add_genre(self, genre: Genre):
+        """ Adds a Genre to the repository. """
+        raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def get_tags(self) -> List[Tag]:
-    #     """ Returns the Tags stored in the repository. """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def get_genres(self) -> List[Genre]:
+        """ Returns the Genres stored in the repository. """
+        raise NotImplementedError
 
     # @abc.abstractmethod
     # def add_comment(self, comment: Comment):

@@ -99,40 +99,7 @@ class Director:
     def __hash__(self):
         return hash(self.__director_full_name)
 
-class Genre:
-    def __init__(self, genre_name: str):
-        self.__genre_name = genre_name
-        if genre_name == "" or type(genre_name) is not str:
-            self.__genre_name = None
-        else:
-            self.__genre_name = genre_name.strip()
-            
-    @property
-    def genre_name(self) -> str:
-        return self.__genre_name
 
-    def __repr__(self):
-        return f"<Genre {self.__genre_name}>"
-
-    def __eq__(self, other):
-        if self.__genre_name == other.genre_name:
-            return True
-        else:
-            return False
-
-
-    def __lt__(self, other):
-        unsortedOrder = [self.__genre_name, other.genre_name]
-        sortedOrder = [self.__genre_name, other.genre_name]
-        sortedOrder.sort()
-        if (unsortedOrder == sortedOrder):
-            return True
-        else:
-            return False
-
-
-    def __hash__(self):
-        return hash(self.__genre_name)
 
 class Actor:
     def __init__(self, actor_full_name: str):
@@ -168,7 +135,7 @@ class Actor:
         return colleague in self.__colleagues
 
 class Movie:
-    def __init__(self, title: str, release_year: int, movie_id: int):
+    def __init__(self, title: str, release_year: int, movie_id: int, director = Director("")):
         if title == None or type(title) is not str:
             self.__title = None
         else:
@@ -188,9 +155,9 @@ class Movie:
         else:
             self.__movie_id = movie_id
         self.__description = ""
-        self.__director = Director("")
-        self.__actors = []
-        self.__genres = []
+        self.__director = director
+        self.__actors: List[Actor] = list()
+        self.__genres: List[Genre] = list()
         self.__runtime_minutes = 0
         self.__hyperlink = None
     
@@ -231,20 +198,22 @@ class Movie:
             self.__director = director
 
     @property
-    def actors(self) -> []:
-        return self.__actors
+    def actors(self) -> Iterable['Actor']:
+        return iter(self.__actors)
     @actors.setter
     def actors(self, actors):
         if type(actors) is list:
             self.__actors = actors
 
     @property
-    def genres(self) -> []:
-        return self.__genres
-    @genres.setter
-    def genres(self, genres):
-        if type(genres) is list:
-            self.__genres = genres
+    def genres(self) -> Iterable['Genre']:
+        return iter(self.__genres)
+    # @genres.setter
+    # def genres(self, genres):
+    #     if type(genres) is list:
+    #         self.__genres = genres
+    def has_genre(self, genre: 'Genre'):
+        return genre in self.__genres
     
     @property
     def runtime_minutes(self) -> int:
@@ -296,13 +265,63 @@ class Movie:
                 self.__actors.remove(actor)
 
     def add_genre(self,genre):
-        if type(genre) is Genre:
-            self.__genres += [genre]
+        if type(genre) is Genre and genre not in self.__genres:
+            self.__genres.append(genre)
 
     def remove_genre(self,genre):
         if type(genre) is Genre:
             if genre in self.__genres:
                 self.__genres.remove(genre)
+
+class Genre:
+    def __init__(self, genre_name: str):
+        self.__genre_name = genre_name
+        if genre_name == "" or type(genre_name) is not str:
+            self.__genre_name = None
+        else:
+            self.__genre_name = genre_name.strip()
+        self.__genre_movies: List[Movie] = list()
+            
+    @property
+    def genre_name(self) -> str:
+        return self.__genre_name
+
+    @property
+    def genre_movies(self) -> Iterable[Movie]:
+        return iter(self.__genre_movies)
+
+    @property
+    def number_of_genre_movies(self) -> int:
+        return len(self.__genre_movies)
+
+    def is_genre_of(self, movie: Movie) -> bool:
+        return movie in self.__genre_movies
+
+    def add_movie(self, movie: Movie):
+        self.__genre_movies.append(movie)
+
+    def __repr__(self):
+        return f"<Genre {self.__genre_name}>"
+
+    def __eq__(self, other):
+        if self.__genre_name == other.genre_name:
+            return True
+        else:
+            return False
+
+
+    def __lt__(self, other):
+        unsortedOrder = [self.__genre_name, other.genre_name]
+        sortedOrder = [self.__genre_name, other.genre_name]
+        sortedOrder.sort()
+        if (unsortedOrder == sortedOrder):
+            return True
+        else:
+            return False
+
+
+    def __hash__(self):
+        return hash(self.__genre_name)
 
 class Review:
     def __init__(self, movie: Movie, review_text: str, rating: int):
@@ -396,3 +415,10 @@ class User:
 
     def __hash__(self):
         return hash(self.__user_name)
+
+def make_genre_association(movie: Movie, genre: Genre):
+    if genre.is_genre_of(movie):
+        raise ModelException(f'Genre {genre.genre_name} already applied to Movie "{movie.title}"')
+    else:
+        movie.add_genre(genre)
+        genre.add_movie(movie)

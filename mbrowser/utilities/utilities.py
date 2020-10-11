@@ -9,13 +9,21 @@ utilities_blueprint = Blueprint(
     'utilities_bp', __name__)
 
 
-# def get_tags_and_urls():
-#     tag_names = services.get_tag_names(repo.repo_instance)
-#     tag_urls = dict()
-#     for tag_name in tag_names:
-#         tag_urls[tag_name] = url_for('news_bp.articles_by_tag', tag=tag_name)
+def get_genres_and_urls():
+    genre_names = services.get_genre_names(repo.repo_instance)
+    genre_urls = dict()
+    for genre_name in genre_names:
+        genre_urls[genre_name] = url_for('movies_bp.movies_by_genre', genre=genre_name)
 
-#     return tag_urls
+    return genre_urls
+
+def get_letter_urls():
+    letters = ['#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    letter_urls = dict()
+    for letter in letters:
+        letter_urls[letter] = url_for('movies_bp.movies_by_title', letter=letter)
+
+    return letter_urls
 
 
 def get_selected_movies(quantity=3):

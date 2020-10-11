@@ -20,6 +20,10 @@ h1 {
     font-weight: bold;
 }
 
+/* h2 {
+  margin-top: 20px;
+} */
+
 img {
   display: block;
   width: 500px;
@@ -48,12 +52,12 @@ img {
 }
 
 .btn-nav:hover {
-  background-color: #594f8d;
+  background-color: #41a73b;
   color: #fff;
 }
 
 .btn-general {
-    background-color: #7532cd;
+    background-color: #7dc46e;
     color: white;
     border: none;
     border-radius: 8px;
@@ -61,10 +65,11 @@ img {
     padding: 10px;
     margin: 5px;
     float:left;
+    cursor: pointer;
 }
 
 .btn-general-disabled {
-    background-color: #4b4276;
+    background-color: #274930;
     border: none;
     border-radius: 8px;
     display: inline-block;
@@ -102,7 +107,7 @@ img {
 
 #content-2 {
   height: 100vh;
-  margin-left: 200px;
+  /* margin-left: 200px; */
   display: flex;
   flex-direction: column;
 }
@@ -111,53 +116,118 @@ img {
   display: flex;
   flex-direction: row;
 }
-
-#nav {
-  width: 200px;
-  height: 100%;
-  background: #7532cd;
-  padding: 30px 0px;
-  position: fixed;
+/* ________________ */
+.topnav {
+  overflow: hidden;
+  background: ghostwhite;
+  /* border: 1px solid #e7e7e7; */
 }
 
-#nav-header {
-  color: #fff;
+.topnav a {
+  float: left;
+  color: #666;
   text-align: center;
-  margin-bottom: 30px;
-  margin-top: 12px;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
 }
 
-#sub-nav-header {
-  color: #fff;
-  text-align: left;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  padding-left: 10px;
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
 }
 
-#nav-footer {
-  color: #fff;
-  margin-top: 25px;
-  margin-bottom: 20px;
-  position: absolute;
-  bottom: 0;
-  font-size: small;
-  text-align: center;
-  word-wrap: break-word;
+.topnav a.active {
+  background-color: #f46353;
+  color: white;
 }
+/* ________________ */
 
 #main {
   margin: 20px;
   color: #717171;
   line-height: 25px;
   padding: 10px;
-  width: 66.666667%;
+  width: 100%;
 }
 
 #logo {
   width: 150px;
 }
 
+.AlphabetNav {
+  /* position: fixed; */
+  top: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  flex-flow: wrap row;
+  padding: .5rem;
+  background: ghostwhite;
+}
+
+.AlphabetNav a {
+  display: flex;
+  justify-content: center;
+  padding: .5em;
+  border-radius: 8px;
+  font-size: 1.2em;
+  line-height: 1;
+  font-weight: 500;
+  text-decoration: none;
+  color: darkgray;
+  cursor: pointer;
+}
+
+.AlphabetNav a:hover {
+  background: #ddd;
+  color: #444;
+}
+
+.AlphabetNav .active {
+  background: #f46353;
+  color: white;
+}
+
+.movies_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-gap: 1em;
+}
+
+.movie_card {
+  font-size: 15px;
+  padding: 1em;
+  background: #fff;
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.1),
+    0 20px 20px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+/* ____________________________________________ */
+.genre_button_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-gap: 1em;
+}
+
+.genre_button {
+  font-size: 30px;
+  padding: 1em;
+  background: #fff;
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.1),
+    0 20px 20px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+.genre_button:hover {
+  background-color: #ddd;
+  color: black;
+}
+/* ____________________________________________ */
 #sidebar {
     background-color: #8acd32;
     color: #717171;
@@ -177,6 +247,7 @@ img {
 #article {
     clear:both;
     margin-bottom:10px;
+    margin-top:30px;
 }
 
 #article-footer {
@@ -188,6 +259,19 @@ img {
     display: flex;
     flex-direction: column;
     margin-top: 30px;
+}
+
+.rank {
+  color: red;
+  padding: 2px 10px;
+  font-weight: bold;
+  /* border: 1px solid rgb(0, 0, 0);
+  border-radius: 30px; */
+  /* background-color: black; */
+}
+
+.year-text {
+  float: right;
 }
 
 input[type='text'],
@@ -214,7 +298,7 @@ input[type='password'],
 
 input[type='submit'] {
     width: 100%;
-     background-color: #7532cd;
+     background-color: #3acd32;
      color: white;
      padding: 14px 20px;
      margin: 8px 0;

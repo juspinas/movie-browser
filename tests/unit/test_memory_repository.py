@@ -3,7 +3,7 @@ from typing import List
 
 import pytest
 
-from mbrowser.domain.model import Director, Genre, Actor, Movie, User
+from mbrowser.domain.model import Director, Genre, Actor, Movie, User, make_genre_association
 from mbrowser.adapters.abstract_repository import RepositoryException
 
 
@@ -44,6 +44,12 @@ def test_repository_can_retrieve_movie(in_memory_repo):
     assert movie.title == 'Sing'
     assert movie.release_year == 2016
     assert movie.movie_id == 4
+    assert movie.director == 'Christophe Lourdelet'
+
+    # Check that the Movie has expected genres.
+    assert movie.has_genre(Genre('Animation'))
+    assert movie.has_genre(Genre('Comedy'))
+    assert movie.has_genre(Genre('Family'))
 
 
 def test_repository_does_not_retrieve_a_non_existent_movie(in_memory_repo):
@@ -63,20 +69,20 @@ def test_repository_does_not_retrieve_an_article_when_there_are_no_movies_for_a_
     assert len(movies) == 0
 
 
-# def test_repository_can_retrieve_tags(in_memory_repo):
-#     tags: List[Tag] = in_memory_repo.get_tags()
+def test_repository_can_retrieve_genres(in_memory_repo):
+    genres: List[Genre] = in_memory_repo.get_genres()
+    assert len(genres) == 20
 
-#     assert len(tags) == 4
+    genre1 = [genre for genre in genres if genre.genre_name == 'Sci-Fi'][0]
+    genre2 = [genre for genre in genres if genre.genre_name == 'Sport'][0]
+    # genre3 = [genre for genre in genres if genre.genre_name == 'World'][0]
+    # genre4 = [genre for genre in genres if genre.genre_name == 'Politics'][0]
 
-#     tag_one = [tag for tag in tags if tag.tag_name == 'New Zealand'][0]
-#     tag_two = [tag for tag in tags if tag.tag_name == 'Health'][0]
-#     tag_three = [tag for tag in tags if tag.tag_name == 'World'][0]
-#     tag_four = [tag for tag in tags if tag.tag_name == 'Politics'][0]
+    assert genre1.number_of_genre_movies == 120
+    assert genre2.number_of_genre_movies == 18
+    # assert genree.number_of_genre_movies == 3
+    # assert genre4.number_of_genre_movies == 1
 
-#     assert tag_one.number_of_tagged_articles == 3
-#     assert tag_two.number_of_tagged_articles == 2
-#     assert tag_three.number_of_tagged_articles == 3
-#     assert tag_four.number_of_tagged_articles == 1
 
 
 def test_repository_can_get_first_movie(in_memory_repo):
@@ -112,16 +118,16 @@ def test_repository_returns_an_empty_list_for_non_existent_ids(in_memory_repo):
     assert len(movies) == 0
 
 
-# def test_repository_returns_article_ids_for_existing_tag(in_memory_repo):
-#     article_ids = in_memory_repo.get_article_ids_for_tag('New Zealand')
+def test_repository_returns_movie_ids_for_existing_genre(in_memory_repo):
+    genre_ids = in_memory_repo.get_movie_ids_for_genre('Sport')
 
-#     assert article_ids == [1, 3, 4]
+    assert genre_ids == [195,311,338,368,378,382,494,549,575,585,587,594,597,831,850,897,936,975]
 
 
-# def test_repository_returns_an_empty_list_for_non_existent_tag(in_memory_repo):
-#     article_ids = in_memory_repo.get_article_ids_for_tag('United States')
+def test_repository_returns_an_empty_list_for_non_existent_genre(in_memory_repo):
+    genre_ids = in_memory_repo.get_movie_ids_for_genre('Anime')
 
-#     assert len(article_ids) == 0
+    assert len(genre_ids) == 0
 
 
 # def test_repository_returns_release_year_of_previous_movie(in_memory_repo):
@@ -152,11 +158,11 @@ def test_repository_returns_an_empty_list_for_non_existent_ids(in_memory_repo):
 #     assert next_date is None
 
 
-# def test_repository_can_add_a_tag(in_memory_repo):
-#     tag = Tag('Motoring')
-#     in_memory_repo.add_tag(tag)
+def test_repository_can_add_a_genre(in_memory_repo):
+    genre = Genre('Anime')
+    in_memory_repo.add_genre(genre)
 
-#     assert tag in in_memory_repo.get_tags()
+    assert genre in in_memory_repo.get_genres()
 
 
 # def test_repository_can_add_a_comment(in_memory_repo):

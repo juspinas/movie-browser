@@ -8,7 +8,7 @@ from bisect import bisect, bisect_left, insort_left
 # from werkzeug.security import generate_password_hash
 
 from mbrowser.adapters.abstract_repository import AbstractRepository, RepositoryException
-from mbrowser.domain.model import Director, Genre, Actor, Movie, User
+from mbrowser.domain.model import Director, Genre, Actor, Movie, User, make_genre_association
 
 
 class MemoryRepository(AbstractRepository):
@@ -17,7 +17,7 @@ class MemoryRepository(AbstractRepository):
     def __init__(self):
         self._movies = list()
         self._movies_index = dict()
-        self._tags = list()
+        self._genres = list()
         self._users = list()
         self._comments = list()
 
@@ -41,11 +41,15 @@ class MemoryRepository(AbstractRepository):
 
         return movie
 
+    # def get_all_movies(self):
+    #     return self._movies
+
     def get_movies_by_release_year(self, target_year: int) -> List[Movie]:
         target_movie = Movie(
             title=None,
             release_year=target_year,
-            movie_id=None
+            movie_id=None,
+            director = Director(""),
         )
         matching_movies = list()
 
@@ -54,7 +58,7 @@ class MemoryRepository(AbstractRepository):
                 if movie.release_year == target_year:
                     matching_movies.append(movie)
         except ValueError:
-            # No articles for specified date. Simply return an empty list.
+            # No movies for specified release year. Simply return an empty list.
             pass
 
         return matching_movies
@@ -84,18 +88,18 @@ class MemoryRepository(AbstractRepository):
         movies = [self._movies_index[id] for id in existing_ids]
         return movies
 
-    # def get_article_ids_for_tag(self, tag_name: str):
-    #     # Linear search, to find the first occurrence of a Tag with the name tag_name.
-    #     tag = next((tag for tag in self._tags if tag.tag_name == tag_name), None)
+    def get_movie_ids_for_genre(self, genre_name: str):
+        # Linear search, to find the first occurrence of a Tag with the name tag_name.
+        genre = next((genre for genre in self._genres if genre.genre_name == genre_name), None)
 
-    #     # Retrieve the ids of articles associated with the Tag.
-    #     if tag is not None:
-    #         article_ids = [article.id for article in tag.tagged_articles]
-    #     else:
-    #         # No Tag with name tag_name, so return an empty list.
-    #         article_ids = list()
+        # Retrieve the ids of articles associated with the Tag.
+        if genre is not None:
+            movie_ids = [movie.movie_id for movie in genre.genre_movies]
+        else:
+            # No Tag with name tag_name, so return an empty list.
+            movie_ids = list()
 
-    #     return article_ids
+        return movie_ids
 
     # def get_release_year_of_previous_movie(self, movie: Movie):
     #     previous_release_year = None
@@ -127,12 +131,12 @@ class MemoryRepository(AbstractRepository):
 
     #     return next_release_year
 
-    # def add_tag(self, tag: Tag):
-    #     self._tags.append(tag)
+    def add_genre(self, genre: Genre):
+        self._genres.append(genre)
 
-    # def get_tags(self) -> List[Tag]:
-    #     print('In memory repo, getting tags!')
-    #     return self._tags
+    def get_genres(self) -> List[Genre]:
+        print('In memory repo, getting Genres!')
+        return self._genres
 
     # def add_comment(self, comment: Comment):
     #     super().add_comment(comment)
@@ -150,7 +154,7 @@ class MemoryRepository(AbstractRepository):
 
 
 def read_csv_file(filename: str):
-    with open(filename) as infile:
+    with open(filename, mode='r', encoding='utf-8-sig') as infile:
         reader = csv.reader(infile)
 
         # Read first line of the the CSV file.
@@ -164,19 +168,19 @@ def read_csv_file(filename: str):
 
 
 def load_movies_and_tags(data_path: str, repo: MemoryRepository):
-    tags = dict()
+    genres = dict()
 
     for data_row in read_csv_file(os.path.join(data_path, 'Data1000Movies.csv')):
 
         movie_key = int(data_row[0])
         genre_tags = data_row[2].split(",")
-        number_of_tags = len(genre_tags)
+        number_of_genres = len(genre_tags)
 
         # Add any new tags; associate the current movie with tags.
-        # for tag in article_tags:
-        #     if tag not in tags.keys():
-        #         tags[tag] = list()
-        #     tags[tag].append(article_key)
+        for genre in genre_tags:
+            if genre not in genres.keys():
+                genres[genre] = list()
+            genres[genre].append(movie_key)
 
         # del data_row[-number_of_tags:]
 
@@ -184,7 +188,9 @@ def load_movies_and_tags(data_path: str, repo: MemoryRepository):
         movie = Movie(
             title=data_row[1],
             release_year=data_row[6],
-            movie_id=movie_key
+            movie_id=movie_key,
+            director=data_row[4],
+            # actors
             # date=date.fromisoformat(data_row[1]),
             # title=data_row[2],
             # first_para=data_row[3],
@@ -197,12 +203,12 @@ def load_movies_and_tags(data_path: str, repo: MemoryRepository):
         repo.add_movie(movie)
 
     # Create Tag objects, associate them with Articles and add them to the repository.
-    # for tag_name in tags.keys():
-    #     tag = Tag(tag_name)
-    #     for article_id in tags[tag_name]:
-    #         article = repo.get_article(article_id)
-    #         make_tag_association(article, tag)
-    #     repo.add_tag(tag)
+    for genre_name in genres.keys():
+        genre = Genre(genre_name)
+        for movie_id in genres[genre_name]:
+            movie = repo.get_movie(movie_id)
+            make_genre_association(movie, genre)
+        repo.add_genre(genre)
 
 
 # def load_users(data_path: str, repo: MemoryRepository):

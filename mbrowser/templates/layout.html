@@ -3,7 +3,8 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> -->
+    <meta charset="UTF-8">
     <title>CS230Flix - Movie Browser</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
@@ -17,19 +18,18 @@
 
 <body>
     <div id="body">
+        <!-- Include header partial. -->
+        {% include 'header.html' %}
         <!-- Include navigation partial. -->
         {% include 'navigation.html' %}
-
         <div id="content-2">
-            <!-- Include header partial. -->
-            {% include 'header.html' %}
 
             <div id="container">
                 <!-- Main content block to be supplied by page. -->
                 {% block content %} {% endblock %}
 
                 <!-- Include sidebar partial. -->
-                {% include 'sidebar.html' %}
+                <!-- {% include 'sidebar.html' %} -->
             </div>
 
         </div>
