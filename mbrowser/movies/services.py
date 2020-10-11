@@ -37,6 +37,9 @@ def get_movie(movie_id: int, repo: AbstractRepository):
 
     return movie_to_dict(movie)
 
+# def get_all_movies(repo: AbstractRepository):
+#     return repo.get_all_movies()
+
 
 def get_first_movie(repo: AbstractRepository):
 
@@ -69,16 +72,16 @@ def get_movies_by_release_year(year, repo: AbstractRepository):
     return movies_dto #, prev_date, next_date
 
 
-# def get_article_ids_for_tag(tag_name, repo: AbstractRepository):
-#     article_ids = repo.get_article_ids_for_tag(tag_name)
+def get_movie_ids_for_genre(genre_name, repo: AbstractRepository):
+    movie_ids = repo.get_movie_ids_for_genre(genre_name)
 
-#     return article_ids
+    return movie_ids
 
 
 def get_movies_by_id(id_list, repo: AbstractRepository):
     movies = repo.get_movies_by_id(id_list)
 
-    # Convert Articles to dictionary form.
+    # Convert movies to dictionary form.
     movies_as_dict = movies_to_dict(movies)
 
     return movies_as_dict
@@ -99,9 +102,12 @@ def get_movies_by_id(id_list, repo: AbstractRepository):
 
 def movie_to_dict(movie: Movie):
     movie_dict = {
-        'id': movie.movie_id,
+        'movie_id': movie.movie_id,
         'title': movie.title,
         'release_year': movie.release_year,
+        'director' : movie.director,
+        'actors' : [],
+        'genres' : genres_to_dict(movie.genres)
     }
     return movie_dict
 
@@ -124,16 +130,16 @@ def movies_to_dict(movies: Iterable[Movie]):
 #     return [comment_to_dict(comment) for comment in comments]
 
 
-# def tag_to_dict(tag: Tag):
-#     tag_dict = {
-#         'name': tag.tag_name,
-#         'tagged_articles': [article.id for article in tag.tagged_articles]
-#     }
-#     return tag_dict
+def genre_to_dict(genre: Genre):
+    genre_dict = {
+        'name': genre.genre_name,
+        'genre_movies': [movie.movie_id for movie in genre.genre_movies]
+    }
+    return genre_dict
 
 
-# def tags_to_dict(tags: Iterable[Tag]):
-#     return [tag_to_dict(tag) for tag in tags]
+def genres_to_dict(genres: Iterable[Genre]):
+    return [genre_to_dict(genre) for genre in genres]
 
 
 # ============================================
@@ -141,6 +147,6 @@ def movies_to_dict(movies: Iterable[Movie]):
 # ============================================
 
 def dict_to_movie(dict):
-    movie = Movie(dict.title, dict.release_year, dict.id)
+    movie = Movie(dict.title, dict.release_year, dict.id, dict.director, dict.actors, dict.genres)
     # Note there's no comments or tags.
-    return movie
+    return article

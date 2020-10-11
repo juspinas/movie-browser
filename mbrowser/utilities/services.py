@@ -5,11 +5,11 @@ from mbrowser.adapters.abstract_repository import AbstractRepository
 from mbrowser.domain.model import Movie
 
 
-# def get_tag_names(repo: AbstractRepository):
-#     tags = repo.get_tags()
-#     tag_names = [tag.tag_name for tag in tags]
+def get_genre_names(repo: AbstractRepository):
+    genres = repo.get_genres()
+    genre_names = [genre.genre_name for genre in genres]
 
-#     return tag_names
+    return genre_names
 
 
 def get_random_movies(quantity, repo: AbstractRepository):
@@ -32,9 +32,10 @@ def get_random_movies(quantity, repo: AbstractRepository):
 
 def movie_to_dict(movie: Movie):
     movie_dict = {
-        'id': movie.movie_id,
+        'movie_id': movie.movie_id,
         'title': movie.title,
-        'release_year': movie.release_year
+        'release_year': movie.release_year,
+        'director' : movie.director,
     }
     return movie_dict
 

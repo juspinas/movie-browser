@@ -93,18 +93,19 @@ def test_can_get_article(in_memory_repo):
 
     movie_as_dict = movies_services.get_movie(movie_id, in_memory_repo)
 
-    assert movie_as_dict['id'] == movie_id
+    assert movie_as_dict['movie_id'] == movie_id
     assert movie_as_dict['title'] == "Prometheus"
     assert movie_as_dict['release_year'] == 2012
+    assert movie_as_dict['director'] == 'Ridley Scott'
     #assert article_as_dict['first_para'] == 'US President Trump tweeted on Saturday night (US time) that he has asked the Centres for Disease Control and Prevention to issue a ""strong Travel Advisory"" but that a quarantine on the New York region"" will not be necessary.'
     # assert article_as_dict['hyperlink'] == 'https://www.nzherald.co.nz/world/news/article.cfm?c_id=2&objectid=12320699'
     # assert article_as_dict['image_hyperlink'] == 'https://www.nzherald.co.nz/resizer/159Vi4ELuH2fpLrv1SCwYLulzoM=/620x349/smart/filters:quality(70)/arc-anglerfish-syd-prod-nzme.s3.amazonaws.com/public/XQOAY2IY6ZEIZNSW2E3UMG2M4U.jpg'
     # assert len(article_as_dict['comments']) == 0
 
-    # tag_names = [dictionary['name'] for dictionary in article_as_dict['tags']]
-    # assert 'World' in tag_names
-    # assert 'Health' in tag_names
-    # assert 'Politics' in tag_names
+    genre_names = [dictionary['name'] for dictionary in movie_as_dict['genres']]
+    assert 'Adventure' in genre_names
+    assert 'Mystery' in genre_names
+    assert 'Sci-Fi' in genre_names
 
 
 def test_cannot_get_movie_with_non_existent_id(in_memory_repo):
@@ -118,13 +119,13 @@ def test_cannot_get_movie_with_non_existent_id(in_memory_repo):
 def test_get_first_movie(in_memory_repo):
     movie_as_dict = movies_services.get_first_movie(in_memory_repo)
 
-    assert movie_as_dict['id'] == 1
+    assert movie_as_dict['movie_id'] == 1
 
 
 def test_get_last_movie(in_memory_repo):
     movie_as_dict = movies_services.get_last_movie(in_memory_repo)
 
-    assert movie_as_dict['id'] == 1000
+    assert movie_as_dict['movie_id'] == 1000
 
 
 # def test_get_articles_by_date_with_one_date(in_memory_repo):
@@ -156,7 +157,7 @@ def test_get_movies_by_release_year(in_memory_repo):
     # assert next_date == date.fromisoformat('2020-03-05')
 
 
-def test_get_moviess_by_release_year_with_non_existent_release_year(in_memory_repo):
+def test_get_movies_by_release_year_with_non_existent_release_year(in_memory_repo):
     target_year = 2005
 
     movies_as_dict = movies_services.get_movies_by_release_year(target_year, in_memory_repo)
@@ -173,7 +174,7 @@ def test_get_movies_by_id(in_memory_repo):
     assert len(movies_as_dict) == 2
 
     # Check that the article ids returned were 5 and 6.
-    movie_ids = [movie['id'] for movie in movies_as_dict]
+    movie_ids = [movie['movie_id'] for movie in movies_as_dict]
     assert set([22, 596]).issubset(movie_ids)
 
 

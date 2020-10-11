@@ -7,6 +7,7 @@
         <h1>{{ movies_title }}</h1>
     </header>
 
+
     <nav style="clear:both">
         <div style="float:left">
             {% if first_movie_url is not none %}
@@ -33,13 +34,67 @@
             {% endif %}
         </div>
     </nav>
+    <br>
+    
+    {% if movies_title == 'Browse Movies' %}
+    <nav class="AlphabetNav">
+        {% for letter in letters %}
+        {% if letter == current_letter %}
+        <a class='active' onclick='location.href="{{ letter_urls[letter] }}"'>{{letter}}</a>
+        {% else %}
+        <a onclick='location.href="{{ letter_urls[letter] }}"'>{{letter}}</a>
+        {% endif %}
+        {% endfor %}
+    </nav>
+    {% endif %}
 
-    {% for movie in movies %}
+    <!-- Movie -->
+    <!-- {% for movie in movies %}
     <article id="article">
+        {% if movies_title == 'Showing 1000 Movies By Rank' %}
+        <h2><span class='rank'>{{movie.movie_id}}</span> {{movie.title}}</h2>
+        {% else %}
         <h2>{{movie.title}}</h2>
-        <p>{{movie.release_year}}</p>
+        {% endif %}
+        <p class='year-text'>{{movie.release_year}}</p>
+        <div style="float:left">
+            {% for genre in movie.genres %}
+            <button class="btn-general" onclick="location.href='{{ genre_urls[genre.name] }}'">{{ genre.name }}</button>
+            {% endfor %}
+        </div>
     </article>
-    {% endfor %}
+    {% endfor %} -->
+
+    <div class="movies_container">
+        {% for movie in movies %}
+        <div class="movie_card">
+            {% if movies_title == 'Showing 1000 Movies By Rank' %}
+            <h2><span class='rank'>{{movie.movie_id}}</span> {{movie.title}}</h2>
+            {% else %}
+            <h2>{{movie.title}}</h2>
+            {% endif %}
+            <p class='year-text'>{{movie.release_year}}</p>
+            <div style="float:left">
+                {% for genre in movie.genres %}
+                <button class="btn-general" onclick="location.href='{{ genre_urls[genre.name] }}'">{{ genre.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if movies_title == 'Browse Movies' %}
+    <nav class="AlphabetNav">
+        {% for letter in letters %}
+        {% if letter == current_letter %}
+        <a class='active' onclick='location.href="{{ letter_urls[letter] }}"'>{{letter}}</a>
+        {% else %}
+        <a onclick='location.href="{{ letter_urls[letter] }}"'>{{letter}}</a>
+        {% endif %}
+        {% endfor %}
+    </nav>
+    {% endif %}
+
     <footer>
         <nav style="clear:both">
             <div style="float:left">

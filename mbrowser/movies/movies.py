@@ -19,9 +19,93 @@ import mbrowser.movies.services as services
 movies_blueprint = Blueprint(
     'movies_bp', __name__)
 
+@movies_blueprint.route('/movies_by_title', methods=['GET'])
+def movies_by_title():
+    letters = ['#','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    movies_per_page = 20
+
+    # Read query parameters.
+    letter = request.args.get('letter')
+
+    cursor = request.args.get('cursor')
+
+    # article_to_show_comments = request.args.get('view_comments_for')
+
+    # if article_to_show_comments is None:
+    #     # No view-comments query parameter, so set to a non-existent article id.
+    #     article_to_show_comments = -1
+    # else:
+    #     # Convert article_to_show_comments from string to int.
+    #     article_to_show_comments = int(article_to_show_comments)
+
+    if cursor is None:
+        # No cursor query parameter, so initialise cursor to start at the beginning.
+        cursor = 0
+    else:
+        # Convert cursor from string to int.
+        cursor = int(cursor)
+
+    # Retrieve article ids for articles that are tagged with tag_name.
+    movie_ids = range(1,1001)
+
+    # Retrieve the batch of articles to display on the Web page.
+    all_movies = services.get_movies_by_id(movie_ids, repo.repo_instance)
+    movies = list()
+    for movie in all_movies:
+        if movie['title'][0] == letter:
+            movies.append(movie)
+        elif letter == '#' and not movie['title'][0].isalpha():
+            movies.append(movie)
+    movies = sorted(movies, key = lambda i: (i['title'], i['release_year']))
+    shown_movies = movies[cursor:cursor + movies_per_page]
+    # all_movies = services.get_all_movies(repo.repo_instance)
+    # movies = all_movies[cursor:cursor + movies_per_page]
+
+    first_movie_url = None
+    last_movie_url = None
+    next_movie_url = None
+    prev_movie_url = None
+
+    if cursor > 0:
+        # There are preceding articles, so generate URLs for the 'previous' and 'first' navigation buttons.
+        prev_movie_url = url_for('movies_bp.movies_by_title', letter = letter, cursor=cursor - movies_per_page)
+        first_movie_url = url_for('movies_bp.movies_by_title', letter = letter)
+
+    if cursor + movies_per_page < len(movies):
+        # There are further articles, so generate URLs for the 'next' and 'last' navigation buttons.
+        next_movie_url = url_for('movies_bp.movies_by_title', letter = letter, cursor=cursor + movies_per_page)
+
+        last_cursor = movies_per_page * int(len(movies) / movies_per_page)
+        if len(movies) % movies_per_page == 0:
+            last_cursor -= movies_per_page
+        last_movie_url = url_for('movies_bp.movies_by_title', letter = letter, cursor=last_cursor)
+
+    # Construct urls for viewing article comments and adding comments.
+    # for article in articles:
+    #     article['view_comment_url'] = url_for('news_bp.articles_by_tag', tag=tag_name, cursor=cursor, view_comments_for=article['id'])
+    #     article['add_comment_url'] = url_for('news_bp.comment_on_article', article=article['id'])
+
+    # Generate the webpage to display the articles.
+    return render_template(
+        'movies/movies.html',
+        title='Movies',
+        movies_title='Browse Movies',
+        movies=shown_movies,
+        # selected_movies=utilities.get_selected_movies(len(movies) * 2),
+        genre_urls=utilities.get_genres_and_urls(),
+        current_letter=letter,
+        letters=letters,
+        letter_urls=utilities.get_letter_urls(),
+        first_movie_url=first_movie_url,
+        last_movie_url=last_movie_url,
+        prev_movie_url=prev_movie_url,
+        next_movie_url=next_movie_url,
+        # show_comments_for_article=article_to_show_comments
+    )
+
 @movies_blueprint.route('/movies_by_rank', methods=['GET'])
 def movies_by_rank():
-    movies_per_page = 10
+    movies_per_page = 20
 
     # Read query parameters.
     # tag_name = request.args.get('tag')
@@ -76,10 +160,78 @@ def movies_by_rank():
     return render_template(
         'movies/movies.html',
         title='Movies',
-        movies_title='Showing 10 of 1000 movies',
+        movies_title='Showing 1000 Movies By Rank',
         movies=movies,
         # selected_movies=utilities.get_selected_movies(len(movies) * 2),
-        # tag_urls=utilities.get_tags_and_urls(),
+        genre_urls=utilities.get_genres_and_urls(),
+        first_movie_url=first_movie_url,
+        last_movie_url=last_movie_url,
+        prev_movie_url=prev_movie_url,
+        next_movie_url=next_movie_url,
+        # show_comments_for_article=article_to_show_comments
+    )
+
+@movies_blueprint.route('/movies_by_genre', methods=['GET'])
+def movies_by_genre():
+    movies_per_page = 20
+
+    # Read query parameters.
+    genre_name = request.args.get('genre')
+    cursor = request.args.get('cursor')
+    # article_to_show_comments = request.args.get('view_comments_for')
+
+    # if article_to_show_comments is None:
+    #     # No view-comments query parameter, so set to a non-existent article id.
+    #     article_to_show_comments = -1
+    # else:
+    #     # Convert article_to_show_comments from string to int.
+    #     article_to_show_comments = int(article_to_show_comments)
+
+    if cursor is None:
+        # No cursor query parameter, so initialise cursor to start at the beginning.
+        cursor = 0
+    else:
+        # Convert cursor from string to int.
+        cursor = int(cursor)
+
+    # Retrieve article ids for articles that are tagged with tag_name.
+    movie_ids = services.get_movie_ids_for_genre(genre_name, repo.repo_instance)
+
+    # Retrieve the batch of articles to display on the Web page.
+    movies = services.get_movies_by_id(movie_ids[cursor:cursor + movies_per_page], repo.repo_instance)
+
+    first_movie_url = None
+    last_movie_url = None
+    next_movie_url = None
+    prev_movie_url = None
+
+    if cursor > 0:
+        # There are preceding articles, so generate URLs for the 'previous' and 'first' navigation buttons.
+        prev_movie_url = url_for('movies_bp.movies_by_genre', genre=genre_name, cursor=cursor - movies_per_page)
+        first_movie_url = url_for('movies_bp.movies_by_genre', genre=genre_name)
+
+    if cursor + movies_per_page < len(movie_ids):
+        # There are further articles, so generate URLs for the 'next' and 'last' navigation buttons.
+        next_movie_url = url_for('movies_bp.movies_by_genre', genre=genre_name, cursor=cursor + movies_per_page)
+
+        last_cursor = movies_per_page * int(len(movie_ids) / movies_per_page)
+        if len(movie_ids) % movies_per_page == 0:
+            last_cursor -= movies_per_page
+        last_movie_url = url_for('movies_bp.movies_by_genre', genre=genre_name, cursor=last_cursor)
+
+    # Construct urls for viewing article comments and adding comments.
+    # for article in articles:
+    #     article['view_comment_url'] = url_for('news_bp.articles_by_tag', tag=tag_name, cursor=cursor, view_comments_for=article['id'])
+    #     article['add_comment_url'] = url_for('news_bp.comment_on_article', article=article['id'])
+
+    # Generate the webpage to display the articles.
+    return render_template(
+        'movies/movies.html',
+        title='Movies',
+        movies_title='Showing ' + genre_name + ' Movies',
+        movies=movies,
+        # selected_movies=utilities.get_selected_movies(len(movies) * 2),
+        genre_urls=utilities.get_genres_and_urls(),
         first_movie_url=first_movie_url,
         last_movie_url=last_movie_url,
         prev_movie_url=prev_movie_url,
