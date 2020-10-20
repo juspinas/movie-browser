@@ -2,7 +2,7 @@ import abc
 from typing import List
 from datetime import date
 
-from mbrowser.domain.model import Director, Genre, Actor, Movie, User
+from mbrowser.domain.model import Director, Genre, Actor, Movie, User, Review
 
 repo_instance = None
 
@@ -14,17 +14,17 @@ class RepositoryException(Exception):
 
 class AbstractRepository(abc.ABC):
 
-    # @abc.abstractmethod
-    # def add_user(self, user: User):
-    #     """" Adds a User to the repository. """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def add_user(self, user: User):
+        """" Adds a User to the repository. """
+        raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def get_user(self, username) -> User:
-    #     """ Returns the User named username from the repository.
-    #     If there is no User with the given username, this method returns None.
-    #     """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def get_user(self, username) -> User:
+        """ Returns the User named username from the repository.
+        If there is no User with the given username, this method returns None.
+        """
+        raise NotImplementedError
 
     @abc.abstractmethod
     def add_movie(self, movie: Movie):
@@ -35,6 +35,12 @@ class AbstractRepository(abc.ABC):
     def get_movie(self, id: int) -> Movie:
         """ Returns Movie with id from the repository.
         If there is no Movie with the given id, this method returns None.
+        """
+        raise NotImplementedError
+
+    def get_movies(self) -> List[Movie]:
+        """ Returns the full list of Movies.
+        If there are no Movies, this method returns an empty list.
         """
         raise NotImplementedError
 
@@ -72,27 +78,45 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def get_movie_ids_for_director(self, director_full_name: str):
+        """ Returns a list of ids representing Movies that are tagged by director_full_name.
+        If there are no movies that are tagged by director_full_name, this method returns an empty list.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_movie_ids_for_actor(self, actor_full_name: str):
+        """ Returns a list of ids representing Movies that are tagged by actor_full_name.
+        If there are no movies that are tagged by actor_full_name, this method returns an empty list.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def get_movie_ids_for_genre(self, genre_name: str):
         """ Returns a list of ids representing Movies that are tagged by genre_name.
         If there are no movies that are tagged by genre_name, this method returns an empty list.
         """
         raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def get_release_year_of_previous_movie(self, movie: Movie):
-    #     """ Returns the date of an Article that immediately precedes article.
-    #     If article is the first Article in the repository, this method returns None because there are no Articles
-    #     on a previous date.
-    #     """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def add_director(self, director: Director):
+        """ Adds a Director to the repository. """
+        raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def get_release_year_of_next_movie(self, movie: Movie):
-    #     """ Returns the date of an Article that immediately follows article.
-    #     If article is the last Article in the repository, this method returns None because there are no Articles
-    #     on a later date.
-    #     """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def get_directors(self) -> List[Director]:
+        """ Returns the Directors stored in the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_actor(self, actor: Actor):
+        """ Adds a Actor to the repository. """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_actors(self) -> List[Actor]:
+        """ Returns the Actors stored in the repository. """
+        raise NotImplementedError
 
     @abc.abstractmethod
     def add_genre(self, genre: Genre):
@@ -104,18 +128,18 @@ class AbstractRepository(abc.ABC):
         """ Returns the Genres stored in the repository. """
         raise NotImplementedError
 
-    # @abc.abstractmethod
-    # def add_comment(self, comment: Comment):
-    #     """ Adds a Comment to the repository.
-    #     If the Comment doesn't have bidirectional links with an Article and a User, this method raises a
-    #     RepositoryException and doesn't update the repository.
-    #     """
-    #     if comment.user is None or comment not in comment.user.comments:
-    #         raise RepositoryException('Comment not correctly attached to a User')
-    #     if comment.article is None or comment not in comment.article.comments:
-    #         raise RepositoryException('Comment not correctly attached to an Article')
+    @abc.abstractmethod
+    def add_review(self, review: Review):
+        """ Adds a Comment to the repository.
+        If the Comment doesn't have bidirectional links with an Article and a User, this method raises a
+        RepositoryException and doesn't update the repository.
+        """
+        if review.user is None or review not in review.user.reviews:
+            raise RepositoryException('Review not correctly attached to a User')
+        if review.movie is None or review not in review.movie.reviews:
+            raise RepositoryException('Review not correctly attached to a Movie')
 
-    # @abc.abstractmethod
-    # def get_comments(self):
-    #     """ Returns the Comments stored in the repository. """
-    #     raise NotImplementedError
+    @abc.abstractmethod
+    def get_reviews(self):
+        """ Returns the Reviews stored in the repository. """
+        raise NotImplementedError

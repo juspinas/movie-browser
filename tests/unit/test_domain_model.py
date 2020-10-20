@@ -32,7 +32,11 @@ def empty_actor():
 
 @pytest.fixture()
 def movie():
-    return Movie("Moana", 2016, 1)
+    return Movie("Moana", 2016, 1, '')
+
+@pytest.fixture()
+def user():
+    return User('dbowie', '1234567890')
 
 def test_director_construction(director):
     assert director.director_full_name == 'Peter Jackson'
@@ -57,21 +61,14 @@ def test_movie_construction(movie):
     assert movie.release_year == 2016
     assert movie.movie_id == 1
     assert movie.description == ""
-    assert movie.director == Director("")
-    # assert movie.actors == []
-    # assert movie.genres == []
+    assert movie.number_of_reviews == 0
     assert movie.runtime_minutes == 0
 
-# @pytest.fixture()
-# def user():
-#     return User('dbowie', '1234567890')
+def test_user_construction(user):
+    assert user.username == 'dbowie'
+    assert user.password == '1234567890'
+    assert repr(user) == '<User dbowie>'
 
-
-# def test_user_construction(user):
-#     assert user.username == 'dbowie'
-#     assert user.password == '1234567890'
-#     assert repr(user) == '<User dbowie>'
-
-#     for comment in user.comments:
-#         # User should have an empty list of Comments after construction.
-#         assert False
+    for review in user.reviews:
+        # User should have an empty list of Comments after construction.
+        assert False

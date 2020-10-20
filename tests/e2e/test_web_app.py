@@ -131,7 +131,7 @@ def test_movies_with_letter(client):
 #     assert b'Yeah Freddie, bad news' in response.data
 
 
-def test_articles_with_genre(client):
+def test_movies_with_genre(client):
     # Check that we can retrieve the movies page.
     response = client.get('/movies_by_genre?genre=Action')
     assert response.status_code == 200

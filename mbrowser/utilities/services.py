@@ -5,6 +5,18 @@ from mbrowser.adapters.abstract_repository import AbstractRepository
 from mbrowser.domain.model import Movie
 
 
+def get_director_full_names(repo: AbstractRepository):
+    directors = repo.get_directors()
+    director_full_names = [director.director_full_name for director in directors]
+
+    return director_full_names
+
+def get_actor_full_names(repo: AbstractRepository):
+    actors = repo.get_actors()
+    actor_full_names = [actor.actor_full_name for actor in actors]
+
+    return actor_full_names
+
 def get_genre_names(repo: AbstractRepository):
     genres = repo.get_genres()
     genre_names = [genre.genre_name for genre in genres]
@@ -36,6 +48,7 @@ def movie_to_dict(movie: Movie):
         'title': movie.title,
         'release_year': movie.release_year,
         'director' : movie.director,
+        # 'reviews' : movie.reviews,
     }
     return movie_dict
 

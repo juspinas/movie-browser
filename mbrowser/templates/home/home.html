@@ -1,12 +1,30 @@
 {% extends 'layout.html' %} {% block content %}
 <main id="main">
     <h2 style='text-align: center;'>
-        Browse through 100's of movies!
+        Search movies, directors and actors!
     </h2>
-    <img src='https://i.pinimg.com/originals/ce/18/56/ce1856e82a87cc498025f3bb8226cdb4.jpg'>
+    <div class="form-wrapper">
+        <form class="mainSearch" action="{{handler_url}}" method="get">
+            <!-- {{form.csrf_token}} Need to include this token - Flask WTForms requires it. -->
+            {{form.searchType}}
+            {% if form.searchType.errors %}
+                <ul class="errors">
+                {% for error in form.searchType.errors %}
+                    <li>{{error}}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {{form.search}}
+            {% if form.search.errors %}
+                <ul class="errors">
+                {% for error in form.search.errors %}
+                    <li>{{error}}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {{ form.submit(value='Search') }}
+        </form>
+    </div>
     <br />
-    <p style="text-align: right; font-style: italic;">
-        Created by Justin Espinas
-    </p>
 </main>
 {% endblock %}
