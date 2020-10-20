@@ -25,17 +25,26 @@ def create_app(test_config=None):
         from .home import home
         app.register_blueprint(home.home_blueprint)
 
+        from .search import search
+        app.register_blueprint(search.search_blueprint)
+
         from .movies import movies
         app.register_blueprint(movies.movies_blueprint)
 
         from .genres import genres
         app.register_blueprint(genres.genres_blueprint)
 
-        # from .authentication import authentication
-        # app.register_blueprint(authentication.authentication_blueprint)
+        from .directors import directors
+        app.register_blueprint(directors.directors_blueprint)
 
-        # from .utilities import utilities
-        # app.register_blueprint(utilities.utilities_blueprint)
+        from .actors import actors
+        app.register_blueprint(actors.actors_blueprint)
+
+        from .authentication import authentication
+        app.register_blueprint(authentication.authentication_blueprint)
+
+        from .utilities import utilities
+        app.register_blueprint(utilities.utilities_blueprint)
 
     # @app.route('/')
     # def index():

@@ -206,6 +206,9 @@ h1 {
     0 20px 20px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
+/* #movie_page_card {
+
+} */
 
 /* ____________________________________________ */
 .genre_button_container {
@@ -270,10 +273,17 @@ h1 {
   /* background-color: black; */
 }
 
-.year-text {
-  float: right;
+.movie-description {
+  width: 50%;
 }
 
+.year-text {
+  opacity: 50%;
+}
+
+form {
+
+}
 input[type='text'],
     select {
         width: 100%;
@@ -310,6 +320,46 @@ input[type='submit'] {
 input[type='submit']:hover {
     background-color: #8acd32;
     color: black;
+}
+
+form.mainSearch input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 70%;
+  background: #f1f1f1;
+  border-radius: 0px;
+  height: 45px;
+}
+form.mainSearch select#searchType {
+  width: 20%;
+  float: left;
+  cursor: pointer;
+  font-size: 17px;
+  height: 45px;
+  border-radius: 0px;
+}
+form.mainSearch input[type=submit] {
+  float: left;
+  width: 10%;
+  padding: 10.5px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+  margin: 8px 0;
+  height: 45px;
+}
+form.mainSearch input[type=submit]:hover {
+  background: #0b7dda;
+}
+form.mainSearch::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .icon {

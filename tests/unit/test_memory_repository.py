@@ -3,25 +3,25 @@ from typing import List
 
 import pytest
 
-from mbrowser.domain.model import Director, Genre, Actor, Movie, User, make_genre_association
+from mbrowser.domain.model import Director, Genre, Actor, Movie, User, Review, make_genre_association, make_review
 from mbrowser.adapters.abstract_repository import RepositoryException
 
 
-# def test_repository_can_add_a_user(in_memory_repo):
-#     user = User('Dave', '123456789')
-#     in_memory_repo.add_user(user)
+def test_repository_can_add_a_user(in_memory_repo):
+    user = User('Dave', '123456789')
+    in_memory_repo.add_user(user)
 
-#     assert in_memory_repo.get_user('Dave') is user
-
-
-# def test_repository_can_retrieve_a_user(in_memory_repo):
-#     user = in_memory_repo.get_user('fmercury')
-#     assert user == User('fmercury', '8734gfe2058v')
+    assert in_memory_repo.get_user('Dave') is user
 
 
-# def test_repository_does_not_retrieve_a_non_existent_user(in_memory_repo):
-#     user = in_memory_repo.get_user('prince')
-#     assert user is None
+def test_repository_can_retrieve_a_user(in_memory_repo):
+    user = in_memory_repo.get_user('fmercury')
+    assert user == User('fmercury', 'mvNNbc1eLA$i')
+
+
+def test_repository_does_not_retrieve_a_non_existent_user(in_memory_repo):
+    user = in_memory_repo.get_user('prince')
+    assert user is None
 
 
 def test_repository_can_retrieve_movie_count(in_memory_repo):
@@ -32,9 +32,9 @@ def test_repository_can_retrieve_movie_count(in_memory_repo):
 
 
 def test_repository_can_add_movie(in_memory_repo):
-    movie = Movie("Sing", "2016", 4)
+    movie = Movie("Sing", "2016", 1001,'')
     in_memory_repo.add_movie(movie)
-    assert in_memory_repo.get_movie(4) is movie
+    assert in_memory_repo.get_movie(1001) is movie
 
 
 def test_repository_can_retrieve_movie(in_memory_repo):
@@ -44,13 +44,18 @@ def test_repository_can_retrieve_movie(in_memory_repo):
     assert movie.title == 'Sing'
     assert movie.release_year == 2016
     assert movie.movie_id == 4
-    assert movie.director == 'Christophe Lourdelet'
+    assert movie.has_director(Director('Christophe Lourdelet'))
+
+    # Check that the Movie has expected actors.
+    assert movie.has_actor(Actor('Matthew McConaughey'))
+    assert movie.has_actor(Actor('Reese Witherspoon'))
+    assert movie.has_actor(Actor('Seth MacFarlane'))
+    assert movie.has_actor(Actor('Scarlett Johansson'))
 
     # Check that the Movie has expected genres.
     assert movie.has_genre(Genre('Animation'))
     assert movie.has_genre(Genre('Comedy'))
     assert movie.has_genre(Genre('Family'))
-
 
 def test_repository_does_not_retrieve_a_non_existent_movie(in_memory_repo):
     movie = in_memory_repo.get_movie(1001)
@@ -64,10 +69,29 @@ def test_repository_can_retrieve_movies_by_release_year(in_memory_repo):
     assert len(movies) == 44
 
 
-def test_repository_does_not_retrieve_an_article_when_there_are_no_movies_for_a_given_release_year(in_memory_repo):
+def test_repository_does_not_retrieve_a_movie_when_there_are_no_movies_for_a_given_release_year(in_memory_repo):
     movies = in_memory_repo.get_movies_by_release_year(2005)
     assert len(movies) == 0
 
+def test_repository_can_retrieve_directors(in_memory_repo):
+    directors: List[Director] = in_memory_repo.get_directors()
+    assert len(directors) == 644
+
+    director1 = [director for director in directors if director.director_full_name == 'Anthony Russo'][0]
+    director2 = [director for director in directors if director.director_full_name == 'Christopher Nolan'][0]
+
+    assert director1.number_of_director_movies == 2
+    assert director2.number_of_director_movies == 5
+
+def test_repository_can_retrieve_actors(in_memory_repo):
+    actors: List[Actor] = in_memory_repo.get_actors()
+    assert len(actors) == 1985
+
+    actor1 = [actor for actor in actors if actor.actor_full_name == 'Will Smith'][0]
+    actor2 = [actor for actor in actors if actor.actor_full_name == 'Scarlett Johansson'][0]
+
+    assert actor1.number_of_actor_movies == 10
+    assert actor2.number_of_actor_movies == 12
 
 def test_repository_can_retrieve_genres(in_memory_repo):
     genres: List[Genre] = in_memory_repo.get_genres()
@@ -75,13 +99,9 @@ def test_repository_can_retrieve_genres(in_memory_repo):
 
     genre1 = [genre for genre in genres if genre.genre_name == 'Sci-Fi'][0]
     genre2 = [genre for genre in genres if genre.genre_name == 'Sport'][0]
-    # genre3 = [genre for genre in genres if genre.genre_name == 'World'][0]
-    # genre4 = [genre for genre in genres if genre.genre_name == 'Politics'][0]
 
     assert genre1.number_of_genre_movies == 120
     assert genre2.number_of_genre_movies == 18
-    # assert genree.number_of_genre_movies == 3
-    # assert genre4.number_of_genre_movies == 1
 
 
 
@@ -129,34 +149,17 @@ def test_repository_returns_an_empty_list_for_non_existent_genre(in_memory_repo)
 
     assert len(genre_ids) == 0
 
+def test_repository_can_add_a_director(in_memory_repo):
+    director = Director('Tori Kelly')
+    in_memory_repo.add_director(director)
 
-# def test_repository_returns_release_year_of_previous_movie(in_memory_repo):
-#     article = in_memory_repo.get_article(6)
-#     previous_date = in_memory_repo.get_date_of_previous_article(article)
+    assert director in in_memory_repo.get_directors()
 
-#     assert previous_date.isoformat() == '2020-03-01'
+def test_repository_can_add_an_actor(in_memory_repo):
+    actor = Actor('Tori Kelly')
+    in_memory_repo.add_actor(actor)
 
-
-# def test_repository_returns_none_when_there_are_no_previous_articles(in_memory_repo):
-#     article = in_memory_repo.get_article(1)
-#     previous_date = in_memory_repo.get_date_of_previous_article(article)
-
-#     assert previous_date is None
-
-
-# def test_repository_returns_date_of_next_article(in_memory_repo):
-#     article = in_memory_repo.get_article(3)
-#     next_date = in_memory_repo.get_date_of_next_article(article)
-
-#     assert next_date.isoformat() == '2020-03-05'
-
-
-# def test_repository_returns_none_when_there_are_no_subsequent_articles(in_memory_repo):
-#     article = in_memory_repo.get_article(6)
-#     next_date = in_memory_repo.get_date_of_next_article(article)
-
-#     assert next_date is None
-
+    assert actor in in_memory_repo.get_actors()
 
 def test_repository_can_add_a_genre(in_memory_repo):
     genre = Genre('Anime')
@@ -165,35 +168,35 @@ def test_repository_can_add_a_genre(in_memory_repo):
     assert genre in in_memory_repo.get_genres()
 
 
-# def test_repository_can_add_a_comment(in_memory_repo):
-#     user = in_memory_repo.get_user('thorke')
-#     article = in_memory_repo.get_article(2)
-#     comment = make_comment("Trump's onto it!", user, article)
+def test_repository_can_add_a_review(in_memory_repo):
+    user = in_memory_repo.get_user('thorke')
+    movie = in_memory_repo.get_movie(4)
+    review = make_review("That elephant can SING!!", user, movie)
 
-#     in_memory_repo.add_comment(comment)
+    in_memory_repo.add_review(review)
 
-#     assert comment in in_memory_repo.get_comments()
-
-
-# def test_repository_does_not_add_a_comment_without_a_user(in_memory_repo):
-#     article = in_memory_repo.get_article(2)
-#     comment = Comment(None, article, "Trump's onto it!", datetime.today())
-
-#     with pytest.raises(RepositoryException):
-#         in_memory_repo.add_comment(comment)
+    assert review in in_memory_repo.get_reviews()
 
 
-# def test_repository_does_not_add_a_comment_without_an_article_properly_attached(in_memory_repo):
-#     user = in_memory_repo.get_user('thorke')
-#     article = in_memory_repo.get_article(2)
-#     comment = Comment(None, article, "Trump's onto it!", datetime.today())
+def test_repository_does_not_add_a_review_without_a_user(in_memory_repo):
+    movie = in_memory_repo.get_movie(4)
+    review = Review(None, movie, "That elephant can SING!!", datetime.today())
 
-#     user.add_comment(comment)
-
-#     with pytest.raises(RepositoryException):
-#         # Exception expected because the Article doesn't refer to the Comment.
-#         in_memory_repo.add_comment(comment)
+    with pytest.raises(RepositoryException):
+        in_memory_repo.add_review(review)
 
 
-# def test_repository_can_retrieve_comments(in_memory_repo):
-#     assert len(in_memory_repo.get_comments()) == 2
+def test_repository_does_not_add_a_review_without_a_movie_properly_attached(in_memory_repo):
+    user = in_memory_repo.get_user('thorke')
+    movie = in_memory_repo.get_movie(4)
+    review = Review(None, movie, "That elephant can SING!!", datetime.today())
+
+    user.add_review(review)
+
+    with pytest.raises(RepositoryException):
+        # Exception expected because the Movie doesn't refer to the Review.
+        in_memory_repo.add_review(review)
+
+
+def test_repository_can_retrieve_reviews(in_memory_repo):
+    assert len(in_memory_repo.get_reviews()) == 2

@@ -2,110 +2,116 @@ from datetime import date
 
 import pytest
 
-# from mbrowser.authentication.services import AuthenticationException
+from mbrowser.authentication.services import AuthenticationException
 from mbrowser.movies import services as movies_services
-# from mbrowser.authentication import services as auth_services
+from mbrowser.authentication import services as auth_services
 from mbrowser.movies.services import NonExistentMovieException
 
 
-# def test_can_add_user(in_memory_repo):
-#     new_username = 'jz'
-#     new_password = 'abcd1A23'
+def test_can_add_user(in_memory_repo):
+    new_username = 'jz'
+    new_password = 'abcd1A23'
 
-#     auth_services.add_user(new_username, new_password, in_memory_repo)
+    auth_services.add_user(new_username, new_password, in_memory_repo)
 
-#     user_as_dict = auth_services.get_user(new_username, in_memory_repo)
-#     assert user_as_dict['username'] == new_username
+    user_as_dict = auth_services.get_user(new_username, in_memory_repo)
+    assert user_as_dict['username'] == new_username
 
-#     # Check that password has been encrypted.
-#     assert user_as_dict['password'].startswith('pbkdf2:sha256:')
-
-
-# def test_cannot_add_user_with_existing_name(in_memory_repo):
-#     username = 'thorke'
-#     password = 'abcd1A23'
-
-#     with pytest.raises(auth_services.NameNotUniqueException):
-#         auth_services.add_user(username, password, in_memory_repo)
+    # Check that password has been encrypted.
+    assert user_as_dict['password'].startswith('pbkdf2:sha256:')
 
 
-# def test_authentication_with_valid_credentials(in_memory_repo):
-#     new_username = 'pmccartney'
-#     new_password = 'abcd1A23'
+def test_cannot_add_user_with_existing_name(in_memory_repo):
+    username = 'thorke'
+    password = 'abcd1A23'
 
-#     auth_services.add_user(new_username, new_password, in_memory_repo)
-
-#     try:
-#         auth_services.authenticate_user(new_username, new_password, in_memory_repo)
-#     except AuthenticationException:
-#         assert False
+    with pytest.raises(auth_services.NameNotUniqueException):
+        auth_services.add_user(username, password, in_memory_repo)
 
 
-# def test_authentication_with_invalid_credentials(in_memory_repo):
-#     new_username = 'pmccartney'
-#     new_password = 'abcd1A23'
+def test_authentication_with_valid_credentials(in_memory_repo):
+    new_username = 'pmccartney'
+    new_password = 'abcd1A23'
 
-#     auth_services.add_user(new_username, new_password, in_memory_repo)
+    auth_services.add_user(new_username, new_password, in_memory_repo)
 
-#     with pytest.raises(auth_services.AuthenticationException):
-#         auth_services.authenticate_user(new_username, '0987654321', in_memory_repo)
-
-
-# def test_can_add_comment(in_memory_repo):
-#     article_id = 3
-#     comment_text = 'The loonies are stripping the supermarkets bare!'
-#     username = 'fmercury'
-
-#     # Call the service layer to add the comment.
-#     news_services.add_comment(article_id, comment_text, username, in_memory_repo)
-
-#     # Retrieve the comments for the article from the repository.
-#     comments_as_dict = news_services.get_comments_for_article(article_id, in_memory_repo)
-
-#     # Check that the comments include a comment with the new comment text.
-#     assert next(
-#         (dictionary['comment_text'] for dictionary in comments_as_dict if dictionary['comment_text'] == comment_text),
-#         None) is not None
+    try:
+        auth_services.authenticate_user(new_username, new_password, in_memory_repo)
+    except AuthenticationException:
+        assert False
 
 
-# def test_cannot_add_comment_for_non_existent_article(in_memory_repo):
-#     article_id = 7
-#     comment_text = "COVID-19 - what's that?"
-#     username = 'fmercury'
+def test_authentication_with_invalid_credentials(in_memory_repo):
+    new_username = 'pmccartney'
+    new_password = 'abcd1A23'
 
-#     # Call the service layer to attempt to add the comment.
-#     with pytest.raises(news_services.NonExistentArticleException):
-#         news_services.add_comment(article_id, comment_text, username, in_memory_repo)
+    auth_services.add_user(new_username, new_password, in_memory_repo)
 
-
-# def test_cannot_add_comment_by_unknown_user(in_memory_repo):
-#     article_id = 3
-#     comment_text = 'The loonies are stripping the supermarkets bare!'
-#     username = 'gmichael'
-
-#     # Call the service layer to attempt to add the comment.
-#     with pytest.raises(news_services.UnknownUserException):
-#         news_services.add_comment(article_id, comment_text, username, in_memory_repo)
+    with pytest.raises(auth_services.AuthenticationException):
+        auth_services.authenticate_user(new_username, '0987654321', in_memory_repo)
 
 
-def test_can_get_article(in_memory_repo):
-    movie_id = 2
+def test_can_add_review(in_memory_repo):
+    movie_id = 4
+    review_text = 'Dayum, that elephant can sing!!'
+    username = 'fmercury'
+
+    # Call the service layer to add the review.
+    movies_services.add_review(movie_id, review_text, username, in_memory_repo)
+
+    # Retrieve the reviews for the movie from the repository.
+    reviews_as_dict = movies_services.get_reviews_for_movie(movie_id, in_memory_repo)
+
+    # Check that the reviews include a review with the new review text.
+    assert next(
+        (dictionary['review_text'] for dictionary in reviews_as_dict if dictionary['review_text'] == review_text),
+        None) is not None
+
+
+def test_cannot_add_review_for_non_existent_movie(in_memory_repo):
+    movie_id = 1001
+    review_text = "Pretty decent, but wouldn't watch again."
+    username = 'fmercury'
+
+    # Call the service layer to attempt to add the review.
+    with pytest.raises(movies_services.NonExistentMovieException):
+        movies_services.add_review(movie_id, review_text, username, in_memory_repo)
+
+
+def test_cannot_add_review_by_unknown_user(in_memory_repo):
+    movie_id = 4
+    review_text = 'Dayum, that elephant can sing!!'
+    username = 'gmichael'
+
+    # Call the service layer to attempt to add the review.
+    with pytest.raises(movies_services.UnknownUserException):
+        movies_services.add_review(movie_id, review_text, username, in_memory_repo)
+
+
+def test_can_get_movie(in_memory_repo):
+    movie_id = 4
 
     movie_as_dict = movies_services.get_movie(movie_id, in_memory_repo)
 
     assert movie_as_dict['movie_id'] == movie_id
-    assert movie_as_dict['title'] == "Prometheus"
-    assert movie_as_dict['release_year'] == 2012
-    assert movie_as_dict['director'] == 'Ridley Scott'
-    #assert article_as_dict['first_para'] == 'US President Trump tweeted on Saturday night (US time) that he has asked the Centres for Disease Control and Prevention to issue a ""strong Travel Advisory"" but that a quarantine on the New York region"" will not be necessary.'
-    # assert article_as_dict['hyperlink'] == 'https://www.nzherald.co.nz/world/news/article.cfm?c_id=2&objectid=12320699'
-    # assert article_as_dict['image_hyperlink'] == 'https://www.nzherald.co.nz/resizer/159Vi4ELuH2fpLrv1SCwYLulzoM=/620x349/smart/filters:quality(70)/arc-anglerfish-syd-prod-nzme.s3.amazonaws.com/public/XQOAY2IY6ZEIZNSW2E3UMG2M4U.jpg'
-    # assert len(article_as_dict['comments']) == 0
+    assert movie_as_dict['title'] == "Sing"
+    assert movie_as_dict['release_year'] == 2016
+
+    director_full_names = [dictionary['name'] for dictionary in movie_as_dict['directors']]
+    assert 'Christophe Lourdelet' in director_full_names
+    # print(len(movie_as_dict['actors']))
+    actor_full_names = [dictionary['name'] for dictionary in movie_as_dict['actors']]
+    assert 'Matthew McConaughey' in actor_full_names
+    assert 'Reese Witherspoon' in actor_full_names
+    assert 'Seth MacFarlane' in actor_full_names
+    assert 'Scarlett Johansson' in actor_full_names
 
     genre_names = [dictionary['name'] for dictionary in movie_as_dict['genres']]
-    assert 'Adventure' in genre_names
-    assert 'Mystery' in genre_names
-    assert 'Sci-Fi' in genre_names
+    assert 'Animation' in genre_names
+    assert 'Comedy' in genre_names
+    assert 'Family' in genre_names
+
+    assert len(movie_as_dict['reviews']) == 0
 
 
 def test_cannot_get_movie_with_non_existent_id(in_memory_repo):
@@ -127,19 +133,6 @@ def test_get_last_movie(in_memory_repo):
 
     assert movie_as_dict['movie_id'] == 1000
 
-
-# def test_get_articles_by_date_with_one_date(in_memory_repo):
-#     target_date = date.fromisoformat('2020-02-28')
-
-#     articles_as_dict, prev_date, next_date = news_services.get_articles_by_date(target_date, in_memory_repo)
-
-#     assert len(articles_as_dict) == 1
-#     assert articles_as_dict[0]['id'] == 1
-
-#     assert prev_date is None
-#     assert next_date == date.fromisoformat('2020-02-29')
-
-
 def test_get_movies_by_release_year(in_memory_repo):
     target_year = 2006
 
@@ -148,14 +141,50 @@ def test_get_movies_by_release_year(in_memory_repo):
     # Check that there are 44 movies release in 2006.
     assert len(movies_as_dict) == 44
 
-    # Check that the article ids for the the articles returned are 3, 4 and 5.
-    # article_ids = [article['id'] for article in articles_as_dict]
-    # assert set([3, 4, 5]).issubset(article_ids)
+def test_get_movies_ids_for_director(in_memory_repo):
+    target_director = 'Christopher Nolan'
 
-    # Check that the dates of articles surrounding the target_date are 2020-02-29 and 2020-03-05.
-    # assert prev_date == date.fromisoformat('2020-02-29')
-    # assert next_date == date.fromisoformat('2020-03-05')
+    movie_ids = movies_services.get_movie_ids_for_director(target_director, in_memory_repo)
 
+    assert len(movie_ids) == 5
+
+    assert movie_ids[0] == 37
+    assert movie_ids[1] == 55
+    assert movie_ids[2] == 65
+    assert movie_ids[3] == 81
+    assert movie_ids[4] == 125
+
+def test_get_movies_ids_for_actor(in_memory_repo):
+    target_actor = 'Scarlett Johansson'
+
+    movie_ids = movies_services.get_movie_ids_for_actor(target_actor, in_memory_repo)
+
+    assert len(movie_ids) == 12
+    assert movie_ids[0] == 4
+    assert movie_ids[1] == 36
+    assert movie_ids[2] == 65
+    assert movie_ids[3] == 77
+    assert movie_ids[4] == 174
+    assert movie_ids[5] == 217
+    assert movie_ids[6] == 495
+    assert movie_ids[7] == 534
+    assert movie_ids[8] == 615
+    assert movie_ids[9] == 762
+    assert movie_ids[10] == 854
+    assert movie_ids[11] == 963
+
+def test_get_movies_ids_for_genre(in_memory_repo):
+    target_genre = 'Musical'
+
+    movie_ids = movies_services.get_movie_ids_for_genre(target_genre, in_memory_repo)
+
+    assert len(movie_ids) == 5
+
+    assert movie_ids[0] == 129
+    assert movie_ids[1] == 246
+    assert movie_ids[2] == 651
+    assert movie_ids[3] == 973
+    assert movie_ids[4] == 983
 
 def test_get_movies_by_release_year_with_non_existent_release_year(in_memory_repo):
     target_year = 2005
@@ -173,28 +202,50 @@ def test_get_movies_by_id(in_memory_repo):
     # Check that 2 movies were returned from the query.
     assert len(movies_as_dict) == 2
 
-    # Check that the article ids returned were 5 and 6.
+    # Check that the movie ids returned were 22 and 596.
     movie_ids = [movie['movie_id'] for movie in movies_as_dict]
     assert set([22, 596]).issubset(movie_ids)
 
+def test_movie_search(in_memory_repo):
+    search = "Pirates of the Caribbean"
+    movies_as_dict = movies_services.search_movies(search, in_memory_repo)
+    assert len(movies_as_dict) == 3
+    # print(movies_as_dict)
+    assert movies_as_dict[0]['movie_id'] == 46
+    assert movies_as_dict[1]['movie_id'] == 76
+    assert movies_as_dict[2]['movie_id'] == 79
 
-# def test_get_comments_for_article(in_memory_repo):
-#     comments_as_dict = news_services.get_comments_for_article(1, in_memory_repo)
+def test_director_search(in_memory_repo):
+    search = "Christopher Nolan"
+    directors_as_dict = movies_services.search_directors(search, in_memory_repo)
+    assert len(directors_as_dict) == 1
+    # print(movies_as_dict)
+    assert directors_as_dict[0]['name'] == "Christopher Nolan"
 
-#     # Check that 2 comments were returned for article with id 1.
-#     assert len(comments_as_dict) == 2
+def test_actor_search(in_memory_repo):
+    search = "Matthew McConaughey"
+    actors_as_dict = movies_services.search_actors(search, in_memory_repo)
+    assert len(actors_as_dict) == 1
+    # print(movies_as_dict)
+    assert actors_as_dict[0]['name'] == "Matthew McConaughey"
 
-#     # Check that the comments relate to the article whose id is 1.
-#     article_ids = [comment['article_id'] for comment in comments_as_dict]
-#     article_ids = set(article_ids)
-#     assert 1 in article_ids and len(article_ids) == 1
+def test_get_reviews_for_movie(in_memory_repo):
+    reviews_as_dict = movies_services.get_reviews_for_movie(1, in_memory_repo)
+
+    # Check that 2 reviews were returned for movie with id 1.
+    assert len(reviews_as_dict) == 2
+
+    # Check that the reviews relate to the article whose id is 1.
+    movie_ids = [review['movie_id'] for review in reviews_as_dict]
+    movie_ids = set(movie_ids)
+    assert 1 in movie_ids and len(movie_ids) == 1
 
 
-# def test_get_comments_for_non_existent_article(in_memory_repo):
-#     with pytest.raises(NonExistentArticleException):
-#         comments_as_dict = news_services.get_comments_for_article(7, in_memory_repo)
+def test_get_reviews_for_non_existent_movie(in_memory_repo):
+    with pytest.raises(NonExistentMovieException):
+        reviews_as_dict = movies_services.get_reviews_for_movie(1001, in_memory_repo)
 
 
-# def test_get_comments_for_article_without_comments(in_memory_repo):
-#     comments_as_dict = news_services.get_comments_for_article(2, in_memory_repo)
-#     assert len(comments_as_dict) == 0
+def test_get_reviews_for_movie_without_reviews(in_memory_repo):
+    reviews_as_dict = movies_services.get_reviews_for_movie(2, in_memory_repo)
+    assert len(reviews_as_dict) == 0

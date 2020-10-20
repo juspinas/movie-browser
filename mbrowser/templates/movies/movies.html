@@ -4,7 +4,18 @@
 
 <main id="main">
     <header id="article-header">
+        {% if movies_title == "Results for Movie Search: "%}
+        <h1>{{ movies_title }}<em>{{search}}</em></h2>
+        <h2>Found {{numResults}} Movies</h2>
+        {% elif movies_title == "Movies directed by: "%}
+        <h1>{{ movies_title }}<em>{{search}}</em></h2>
+        <h2>Found {{numResults}} Movies</h2>
+        {% elif movies_title == "Movies Starring: "%}
+        <h1>{{ movies_title }}<em>{{search}}</em></h2>
+        <h2>Found {{numResults}} Movies</h2>
+        {% else %}
         <h1>{{ movies_title }}</h1>
+        {% endif %}
     </header>
 
 
@@ -48,31 +59,18 @@
     </nav>
     {% endif %}
 
-    <!-- Movie -->
-    <!-- {% for movie in movies %}
-    <article id="article">
-        {% if movies_title == 'Showing 1000 Movies By Rank' %}
-        <h2><span class='rank'>{{movie.movie_id}}</span> {{movie.title}}</h2>
-        {% else %}
-        <h2>{{movie.title}}</h2>
-        {% endif %}
-        <p class='year-text'>{{movie.release_year}}</p>
-        <div style="float:left">
-            {% for genre in movie.genres %}
-            <button class="btn-general" onclick="location.href='{{ genre_urls[genre.name] }}'">{{ genre.name }}</button>
-            {% endfor %}
-        </div>
-    </article>
-    {% endfor %} -->
-
+    <!-- Movies -->
     <div class="movies_container">
         {% for movie in movies %}
-        <div class="movie_card">
-            {% if movies_title == 'Showing 1000 Movies By Rank' %}
+        <div class="movie_card" onclick="location.href='{{ movie_urls[movie.movie_id] }}'">
+            {% if movies_title == 'Movie Rankings' %}
             <h2><span class='rank'>{{movie.movie_id}}</span> {{movie.title}}</h2>
             {% else %}
             <h2>{{movie.title}}</h2>
             {% endif %}
+            {% for director in movie.directors %}
+            <h3>Directed by: {{ director.name }}</h3>
+            {% endfor %}
             <p class='year-text'>{{movie.release_year}}</p>
             <div style="float:left">
                 {% for genre in movie.genres %}
