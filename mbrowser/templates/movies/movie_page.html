@@ -5,19 +5,19 @@
     <!-- <header id="article-header">
         <h1>{{ movie.title }}</h1>
     </header> -->
-    <div class="movies_container">
+    <div id="movie_page_container" class="movies_container">
         <div id='movie_page_card' class="movie_card">
             <div style="float:right">
                 <h3>Starring:</h3>
                 <ul>
                     {% for actor in movie.actors %}
-                    <li>{{ actor.name }}</li>
+                    <li class="actor-text" onclick="location.href='{{ actor_urls[actor.name] }}'">{{ actor.name }}</li>
                     {% endfor %}
                 </ul>
             </div>
             <h2><span class='rank'>{{movie.movie_id}}</span> {{movie.title}} <span class='year-text'>{{movie.release_year}}</span></h2>
             {% for director in movie.directors %}
-            <h3>Directed by {{ director.name }}</h3>
+            <h3>Directed by <span class='director-text' onclick="location.href='{{ director_urls[director.name] }}'">{{ director.name }}</span></h3>
             {% endfor %}
             <!-- <h3 class='year-text'></h3> -->
             <div style="float:left">

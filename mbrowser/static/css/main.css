@@ -197,6 +197,11 @@ h1 {
   grid-gap: 1em;
 }
 
+#movie_page_container {
+  width: 80%;
+  margin: auto;
+}
+
 .movie_card {
   font-size: 15px;
   padding: 1em;
@@ -206,9 +211,10 @@ h1 {
     0 20px 20px rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
-/* #movie_page_card {
 
-} */
+#movie_page_card {
+  cursor: default;
+}
 
 /* ____________________________________________ */
 .genre_button_container {
@@ -279,6 +285,24 @@ h1 {
 
 .year-text {
   opacity: 50%;
+}
+.director-text {
+  color: rgb(66, 66, 255);
+  cursor: pointer;
+}
+.actor-text {
+  color: rgb(66, 66, 255);
+  cursor: pointer;
+}
+.director-text:hover {
+  background-color: #ddd;
+  color: black;
+  text-decoration-line: underline;
+}
+.actor-text:hover {
+  background-color: #ddd;
+  color: black;
+  text-decoration-line: underline;
 }
 
 form {

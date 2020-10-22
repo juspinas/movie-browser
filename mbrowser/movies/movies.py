@@ -300,6 +300,8 @@ def movie_page():
         title=movie['title'],
         movie=movie,
         genre_urls=utilities.get_genres_and_urls(),
+        director_urls=utilities.get_directors_and_urls(),
+        actor_urls=utilities.get_actors_and_urls(),
         # movie_urls=utilities.get_movie_urls(),
     )
 
